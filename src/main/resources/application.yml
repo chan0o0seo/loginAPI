@@ -27,6 +27,22 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${OAUTH2_ID}
+            client-secret: ${OAUTH2_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
 jwt:
   secret: ${JWT_SECRET_KEY}
   access-expiration: ${JWT_ACCESS_EXPIRATION}

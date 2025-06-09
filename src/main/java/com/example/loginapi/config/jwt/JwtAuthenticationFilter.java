@@ -26,8 +26,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-
-        // 1) 요청의 쿠키에서 JWT를 찾는다
+        String path = request.getRequestURI();
+        if (path.startsWith("/oauth2/") || path.startsWith("/login/oauth2/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String token = null;
 
         if (request.getCookies() != null) {
@@ -39,13 +42,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // 2) 토큰이 있고, 유효하다면 SecurityContext에 인증 세팅
         if (token != null && tokenProvider.validateToken(token)) {
             SecurityContextHolder.getContext()
                     .setAuthentication(tokenProvider.getAuthentication(token));
         }
 
-        // 3) 다음 필터로 계속 진행
         filterChain.doFilter(request, response);
     }
 }
