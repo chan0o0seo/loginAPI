@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ public class AuthController {
     private final UserRepository userRepository;
     @Value("${jwt.access-expiration}")
     private long accessExpiration;
+
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest req) {
@@ -68,5 +70,23 @@ public class AuthController {
                 })
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("유효하지 않은 토큰입니다."));
+    }
+
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<Void> withdraw(Authentication authentication) {
+        String email = authentication.getName();
+
+        userService.withdrawCurrentUser(email);
+
+        ResponseCookie deleteCookie = ResponseCookie.from("JWT", "")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .build();
     }
 }

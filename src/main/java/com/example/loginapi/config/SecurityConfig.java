@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 "/oauth2/**",
                                 "/login/oauth2/**"
                         ).permitAll()
+                        .requestMatchers("/api/auth/withdraw").authenticated()
                         .anyRequest().authenticated()
                 )
 

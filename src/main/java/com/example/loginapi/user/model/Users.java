@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity(name = "user")
 @Builder
 @AllArgsConstructor
@@ -22,4 +24,6 @@ public class Users {
     private String type;
 
     private boolean enabled = false;
+
+    private LocalDateTime deletedAt;
 }

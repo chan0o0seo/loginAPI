@@ -5,11 +5,13 @@ import com.example.loginapi.user.model.dto.SignupRequest;
 import com.example.loginapi.user.model.Users;
 import com.example.loginapi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -69,5 +71,14 @@ public class UserService {
                 .roles("USER").build();
         userRepository.save(user);
         return user;
+    }
+
+    @Transactional
+    public void withdrawCurrentUser(String email) {
+        Users user = userRepository.findById(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+        user.setEnabled(false);
+        user.setDeletedAt(LocalDateTime.now());
+        userRepository.save(user);
     }
 }
