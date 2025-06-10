@@ -34,6 +34,7 @@ public class UserService {
         Users user = Users.builder()
                 .email(req.getEmail())
                 .password(passwordEncoder.encode(req.getPassword()))
+                .type("local")
                 .roles("USER")
                 .build();
 
@@ -49,20 +50,24 @@ public class UserService {
      *  Google 회원가입 처리
      */
     @Transactional
-    public void registerUser(OAuth2User oauth2User) {
+    public Users registerUser(String registrationId,OAuth2User oauth2User) {
         Map<String, Object> attributes = oauth2User.getAttributes();
-        String email     = (String) attributes.get("email");
 
+        System.out.println(registrationId);
+        String email = (String) attributes.get("email");
 
+        System.out.println(email);
         if(userRepository.existsById(email)) {
-            return;
+            return userRepository.findById(email).get();
         }
         String randomPwd = UUID.randomUUID().toString();
         Users user = Users.builder()
                 .email(email)
                 .password(randomPwd)
+                .type(registrationId)
                 .enabled(true)
                 .roles("USER").build();
         userRepository.save(user);
+        return user;
     }
 }

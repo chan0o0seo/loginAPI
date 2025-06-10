@@ -1,4 +1,4 @@
-package com.example.loginapi.config.jwt;
+package com.example.loginapi.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

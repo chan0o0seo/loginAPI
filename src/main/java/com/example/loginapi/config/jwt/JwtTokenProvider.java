@@ -33,11 +33,11 @@ public class JwtTokenProvider {
 
         if (principal instanceof UserDetails) {
             username = ((UserDetails) principal).getUsername();
-
-        } else if (principal instanceof OAuth2User) {
-            OAuth2User oauth2User = (OAuth2User) principal;
+        } else if (principal instanceof OAuth2User oauth2User) {
             username = oauth2User.getAttribute("email");
-        } else {
+        }   else if (principal instanceof String) {
+            username = (String) principal;
+        }   else {
             throw new IllegalArgumentException("Unsupported principal type: " + principal.getClass());
         }
 
@@ -60,10 +60,11 @@ public class JwtTokenProvider {
         if (principal instanceof UserDetails) {
             username = ((UserDetails) principal).getUsername();
 
-        } else if (principal instanceof OAuth2User) {
-            OAuth2User oauth2User = (OAuth2User) principal;
+        } else if (principal instanceof OAuth2User oauth2User) {
             username = oauth2User.getAttribute("email");
-        } else {
+        }  else if (principal instanceof String) {
+            username = (String) principal;
+        }  else {
             throw new IllegalArgumentException("Unsupported principal type: " + principal.getClass());
         }
 

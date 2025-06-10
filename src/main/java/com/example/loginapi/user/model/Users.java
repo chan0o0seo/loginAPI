@@ -19,5 +19,7 @@ public class Users {
 
     private String roles;
 
+    private String type;
+
     private boolean enabled = false;
 }
